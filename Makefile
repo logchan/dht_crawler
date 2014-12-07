@@ -14,5 +14,8 @@ dht_crawler.o:
 main_dht_crawler.o:
 	$(CC) $(CCFLAGS) -c main_dht_crawler.cpp
 	
+cmain:
+	rm main_dht_crawler.o
+
 clean:
 	rm $(OBJECTS)

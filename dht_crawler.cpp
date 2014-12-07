@@ -2,20 +2,36 @@
 #include "unistd.h"
 #include <fstream>
 
-dht_crawler::dht_crawler(std::string result_file, int session_num, int total_intervals)
+dht_crawler::dht_crawler(std::string result_file, int session_num, int start_port, int total_intervals)
 {
 	this->total_intervals = total_intervals;
 	this->session_num = session_num;
+	this->start_port = start_port;
 	this->result_file = result_file;
+}
+
+void dht_crawler::print_settings(std::ostream& os) const
+{
+	std::cout << "\tupload_rate_limit: " << this->upload_rate_limit << std::endl;
+	std::cout << "\tdownload_rate_limit: " << this->download_rate_limit << std::endl;
+	std::cout << "\tactive_downloads: " << this->active_downloads << std::endl;
+	std::cout << "\talert_queue_size: " << this->alert_queue_size << std::endl;
+	std::cout << "\tdht_announce_interval: " << this->dht_announce_interval << std::endl;
+	std::cout << "\ttorrent_upload_limit: " << this->torrent_upload_limit << std::endl;
+	std::cout << "\ttorrent_download_limit: " << this->torrent_download_limit << std::endl;
+	std::cout << "\tauto_manage_startup: " << this->auto_manage_startup << std::endl;
+	std::cout << "\tauto_manage_interval: " << this->auto_manage_interval << std::endl;
+	std::cout << "\tstart_port: " << this->start_port << std::endl;
+	std::cout << "\tsession_num: " << this->session_num << std::endl;
+	std::cout << "\ttotal_intervals: " << this->total_intervals << std::endl;
+	std::cout << "\twriting_interval: " << this->writing_interval << std::endl;
+	std::cout << "\tresult_file: " << this->result_file << std::endl;
 }
 
 void dht_crawler::run()
 {
 	std::cout << "Starting running with" << std::endl;
-	std::cout << "\tstart port: " << this->start_port << std::endl;
-	std::cout << "\tsessions: " << this->session_num << std::endl;
-	std::cout << "\ttotal intervals: " << this->total_intervals << std::endl;
-	std::cout << "\tresult file: " << this->result_file << std::endl;
+	this->print_settings(std::cout);
 
 	int intervals = 0;
 	while (intervals < total_intervals)
@@ -31,7 +47,7 @@ void dht_crawler::run()
 		}
 		++intervals;
 
-		if (intervals % 60 == 0)
+		if (intervals % writing_interval == 0)
 		{
 			std::cout << "interval " << intervals << " done, writing result file...";
 			if (this->write_result_file())
@@ -49,7 +65,16 @@ void dht_crawler::run()
 		sleep(1);
 	}
 
-	std::cout << "Stopping running" << std::endl;
+	std::cout << "Stopping running, writing result file..." << std::endl;
+	if (this->write_result_file())
+	{
+		std::cout << " success." << std::endl;
+	}
+	else
+	{
+		std::cout << " failed." << std::endl;
+	}
+
 	for (unsigned int i = 0; i < this->sessions.size(); ++i)
 	{
 		auto torrents = sessions[i]->get_torrents();
@@ -120,9 +145,10 @@ void dht_crawler::handle_alerts(libtorrent::session* psession, std::deque<libtor
 	}
 }
 
-void dht_crawler::create_sessions(int start_port)
+void dht_crawler::create_sessions()
 {
-	this->start_port = start_port;
+	int& start_port = this->start_port;
+
 	for (int i = 0; i < this->session_num; ++i)
 	{
 		auto psession = new libtorrent::session;

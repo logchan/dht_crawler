@@ -15,15 +15,11 @@
 class dht_crawler
 {
 public:
-	dht_crawler(std::string result_file, int session_num, int total_intervals);
-	void create_sessions(int start_port);
+
+	dht_crawler(std::string result_file, int session_num, int start_port, int total_intervals);
+	void create_sessions();
+	void print_settings(std::ostream&) const;
 	void run();
-
-private:
-
-	void handle_alerts(libtorrent::session*, std::deque<libtorrent::alert*>*);
-	void add_magnet(std::string link);
-	bool write_result_file();
 
 	// session settings
 	int upload_rate_limit = 200000;
@@ -37,13 +33,20 @@ private:
 	int auto_manage_interval = 15;
 
 	// crawler settings
-	int start_port = 32800;
-	int current_meta_count = 0;
+	int start_port = 32900;
 	int session_num = 50;
 	int total_intervals = 60;
+	int writing_interval = 60;
+	std::string result_file;
+
+private:
+
+	void handle_alerts(libtorrent::session*, std::deque<libtorrent::alert*>*);
+	void add_magnet(std::string link);
+	bool write_result_file();
 
 	// storage
-	std::string result_file;
+	int current_meta_count = 0;
 	std::vector<libtorrent::session*> sessions;
 	std::vector<std::string> info_hash_from_getpeers;
 	std::map<std::string, int> meta;

@@ -230,3 +230,5 @@ $RECYCLE.BIN/
 *.msp
 *.vcxproj
 *.filters
+*.o
+result.txt
