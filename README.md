@@ -14,7 +14,7 @@ apt-get install libtorrent-rasterbar-dev
 ```
 Then you can make use of my Makefile.
 
-Note: The output directory of the Makefile is set to **HOME**, and you may want to change it to **.**
+Note: The output directory of the Makefile is set to **HOME**, and you may want to change it.
 
 A general way of compiling the code using libtorrent:
 
@@ -33,11 +33,16 @@ A config file should be a *json* file like this:
 ```json
 {
 	"start_port": "31321",
-	"result_file": "json_result"
+	"result_file": "dht_result.txt"
 }
 ```
 For a list of accepted configurations, run it without a config file, and check the printed list of settings.
 
+The *result_file* contains the hash of torrents. The format of each line is
+```
+SOME_HEX_NUMBER_OF_HASH HEAT
+```
+The two values are seperated by a tab (```\t```).
 ##Working on
 Save and resume states
 
