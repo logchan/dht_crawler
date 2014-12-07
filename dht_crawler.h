@@ -38,6 +38,7 @@ public:
 	int total_intervals = 60;
 	int writing_interval = 60;
 	std::string result_file;
+	std::vector< std::pair<std::string, int> > trackers;
 
 private:
 

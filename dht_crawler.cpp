@@ -8,6 +8,11 @@ dht_crawler::dht_crawler(std::string result_file, int session_num, int start_por
 	this->session_num = session_num;
 	this->start_port = start_port;
 	this->result_file = result_file;
+
+	this->trackers.push_back(std::make_pair("router.bittorrent.com", 6881));
+	this->trackers.push_back(std::make_pair("router.utorrent.com", 6881));
+	this->trackers.push_back(std::make_pair("router.bitcomet.com", 6881));
+	this->trackers.push_back(std::make_pair("dht.transmissionbt.com", 6881));
 }
 
 void dht_crawler::print_settings(std::ostream& os) const
@@ -153,11 +158,12 @@ void dht_crawler::create_sessions()
 	{
 		auto psession = new libtorrent::session;
 		psession->set_alert_mask(libtorrent::alert::category_t::all_categories);
-		psession->listen_on(std::pair<int, int>(start_port + i, start_port + i));
-		psession->add_dht_router(std::pair<std::string, int>("router.bittorrent.com", 6881));
-		psession->add_dht_router(std::pair<std::string, int>("router.utorrent.com", 6881));
-		psession->add_dht_router(std::pair<std::string, int>("router.bitcomet.com", 6881));
-		psession->add_dht_router(std::pair<std::string, int>("dht.transmissionbt.com", 6881));
+		psession->listen_on(std::make_pair(start_port + i, start_port + i));
+
+		for (int j = 0; j < this->trackers.size(); ++j)
+		{
+			psession->add_dht_router(trackers[j]);
+		}
 
 		libtorrent::session_settings settings = psession->settings();
 		settings.upload_rate_limit = this->upload_rate_limit;
