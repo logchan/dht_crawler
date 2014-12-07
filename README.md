@@ -3,14 +3,42 @@ dht_crawler
 
 a dht crawler using libtorrent
 
-## How to compile
-Well, currently all params are hard coded. I'm just testing whether it works fine. Basically, do NOT use it yet.
+##How to compile
+~~Well, currently all params are hard coded. I'm just testing whether it works fine. Basically, do NOT use it yet.~~
 
-You will need libtorrent-rasterbar and libboost-all installed in order to compile it. Check the Makefile.
+Installing the dependencies:
+
+```shell
+apt-get install autoconf libtool libssl-dev libboost-all-dev
+apt-get install libtorrent-rasterbar-dev
+```
+Then you can make use of my Makefile.
+
+Note: The output directory of the Makefile is set to **HOME**, and you may want to change it to **.**
+
+A general way of compiling the code using libtorrent:
+
+```shell
+g++ source.cpp -ltorrent-rasterbar -lboost_system -o output
+```
+##How to use
+```shell
+./dht_crawler
+./dht_crawler config.json
+```
+If config file is given, it tries to parse it (and exit if failed). Otherwise, it uses the default values.
+
+A config file should be a *json* file like this:
+
+```json
+{
+	"start_port": "31321",
+	"result_file": "json_result"
+}
+```
+For a list of accepted configurations, run it without a config file, and check the printed list of settings.
 
 ##Working on
-Accept command with params (session numbers, torrent limits, result files, etc.)
-
 Save and resume states
 
 Show and save statistics
