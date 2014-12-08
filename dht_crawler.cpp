@@ -31,6 +31,11 @@ void dht_crawler::print_settings(std::ostream& os) const
 	std::cout << "\ttotal_intervals: " << this->total_intervals << std::endl;
 	std::cout << "\twriting_interval: " << this->writing_interval << std::endl;
 	std::cout << "\tresult_file: " << this->result_file << std::endl;
+	std::cout << "\ttrackers:" << std::endl;
+	for (auto iter = this->trackers.cbegin(); iter != this->trackers.cend(); ++iter)
+	{
+		std::cout << "\t\t" << iter->first << ":" << iter->second << std::endl;
+	}
 }
 
 void dht_crawler::run()

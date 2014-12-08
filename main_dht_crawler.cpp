@@ -39,7 +39,7 @@ dht_crawler* create_crawler(string config_data)
 
 	try 
 	{
-		std::cout << config_data << endl;
+		// std::cout << config_data << endl;
 		read_json(ss, pt);
 	}
 	catch (ptree_error& e)
@@ -64,6 +64,33 @@ dht_crawler* create_crawler(string config_data)
 	try_set_property_from_ptree(crawler->writing_interval, "writing_interval", pt);
 	try_set_property_from_ptree(crawler->result_file, "result_file", pt);
 
+	// parse trackers
+	ptree trackers_pt;
+
+	try
+	{
+		trackers_pt = pt.get_child("trackers");
+	}
+	catch (ptree_bad_path& e)
+	{
+		// no trackers in file
+	}
+	
+	if (trackers_pt.size() > 0)
+	{
+		crawler->trackers.clear();
+		for (auto iter = trackers_pt.begin(); iter != trackers_pt.end(); ++iter)
+		{
+			string addr;
+			int port = -1;
+			addr = iter->first;
+			port = iter->second.get_value<int>();
+
+			if (port > 0)
+				crawler->trackers.push_back(std::make_pair(addr, port));
+		}
+	}
+	
 	return crawler;
 }
 
