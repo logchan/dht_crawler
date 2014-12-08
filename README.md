@@ -12,7 +12,7 @@ Installing the dependencies:
 apt-get install autoconf libtool libssl-dev libboost-all-dev
 apt-get install libtorrent-rasterbar-dev
 ```
-Then you can make use of my Makefile.
+Then you can make use of my *Makefile*.
 
 Note: The output directory of the Makefile is set to **HOME**, and you may want to change it.
 
@@ -33,10 +33,17 @@ A config file should be a *json* file like this:
 ```json
 {
 	"start_port": "31321",
-	"result_file": "dht_result.txt"
+	"result_file": "dht_result.txt",
+	"trackers":
+	{
+		"some.tracker.address": 1234,
+		"some.tracker2.address": 5678
+	}
 }
 ```
 For a list of accepted configurations, run it without a config file, and check the printed list of settings.
+
+The *trackers* section shall contain address-port pairs. The format is given above.
 
 The *result_file* contains the hash of torrents. The format of each line is
 ```
